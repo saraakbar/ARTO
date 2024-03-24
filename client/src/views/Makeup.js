@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar2';
+import { useNavigate } from "react-router-dom"
 
 const Makeup = () => {
+  const navigate = useNavigate()
   const [Products, setProducts] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState([]);
-  const [stream, setStream] = useState(null);
   const [filterOptions, setFilterOptions] = useState([]);
   const token = JSON.parse(localStorage.getItem('token'));
   const username = localStorage.getItem('username');
@@ -14,6 +15,7 @@ const Makeup = () => {
     setSelectedFilters(filter === 'All' ? [] : [filter]);
   };
 
+  
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -23,41 +25,17 @@ const Makeup = () => {
           },
         });
         setProducts(response.data);
-  
+
         const categories = [...new Set(response.data.map(product => product.category))];
         setFilterOptions(['All', ...categories]);
-  
+
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
-  
+
     fetchProducts();
   }, []);
-
-  useEffect(() => {
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [stream]);
-
-  const handleCamera = async () => {
-    try {
-      const userMediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
-      setStream(userMediaStream);
-    } catch (error) {
-      console.error('Error accessing camera:', error);
-    }
-  };
-
-  const handleClose = () => {
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-      setStream(null);
-    }
-  };
 
   const filteredProducts = Products.filter((product) => {
     if (selectedFilters.length === 0) return true;
@@ -94,7 +72,7 @@ const Makeup = () => {
               <div key={Products._id} className="w-52 h-[26rem] rounded-lg bg-white overflow-hidden shadow-lg relative">
                 <button
                   className="mt-1 ml-1 p-1 bg-gradient-to-r from-yellow-400 to-red-600 text-white text-sm font-bold rounded-md"
-                  onClick={handleCamera}
+                  onClick={() => navigate('/camera')}
                 >
                   Try-On
                 </button>
@@ -104,25 +82,11 @@ const Makeup = () => {
                 <button className="mt-2 absolute bottom-0 w-full justify-center bg-zinc-700 hover:bg-moonstone text-white text-center font-semibold py-2 rounded-b-lg">
                   Product Details
                 </button>
-                </div>
+              </div>
             ))}
           </div>
         </div>
       </div>
-      {/* Video stream */}
-      {stream && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black">
-          <div className="relative">
-            <button
-              className="absolute top-4 right-4 px-3 py-2 bg-white text-black font-bold rounded-full"
-              onClick={handleClose}
-            >
-              Close
-            </button>
-            <video className="max-h-full max-w-full" autoPlay muted playsInline ref={(video) => { if (video) video.srcObject = stream; }} />
-          </div>
-        </div>
-      )}
     </>
   );
 };
