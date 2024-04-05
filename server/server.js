@@ -25,7 +25,4 @@ const productRoute = require('./routes/productRoute');
 app.use(userRoute);
 app.use(productRoute);
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`Server Started on port ${PORT}`));
-
-module.exports = app;
+app.listen(8000, () => console.log('Server Started'));
