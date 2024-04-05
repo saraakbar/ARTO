@@ -15,11 +15,6 @@ app.use(cors({
   origin: 'https://frontend-alpha-one-22.vercel.app',
 }));
 
-app.get("/", (req, res) => {
-    const response = "Welcome to ARTO";
-      res.status(200).json({ message: response });
-});
-
 const userRoute = require('./routes/userRoute');
 const productRoute = require('./routes/productRoute');
 app.use(userRoute);
