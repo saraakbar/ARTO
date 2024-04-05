@@ -70,7 +70,7 @@ const Login = ({ }) => {
 
         if (Object.keys(formErrors).length === 0 && isSubmit) {
             axios
-                .post("http://localhost:8000/login", user)
+                .post("https://arto-mt1b8u0d6-saraakbars-projects.vercel.app/login", user)
                 .then((res) => {
                     if (res.status === 201) {
                         toast.success("Login Successful!", {
