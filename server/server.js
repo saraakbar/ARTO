@@ -12,8 +12,7 @@ db.once('open', () => console.log('Connected to Database'));
 app.use(express.json());
 app.use(cors({
   origin: 'https://frontend-alpha-one-22.vercel.app',
-  credentials: true,
-  exposeHeaders: "access-control-allow-origin,access-control-allow-methods,access-control-allow-headers"
+  credentials: true 
 }));
 
 const userRoute = require('./routes/userRoute');
