@@ -25,8 +25,8 @@ export default function Navbar2({uname}) {
           <div className="text-white font-bold text-xl">ARTO</div>
           <div className="hidden md:flex space-x-6">
             <DropdownRender uname={uname} />
-            <a href="/makeup" className="text-white font-bold hover:text-moonstone">MAKE-UP</a>
-            <a href="/help" className="text-white font-bold hover:text-moonstone">HELP</a>
+            <a href="/makeup" className="text-white font-bold">MAKE-UP</a>
+            <a href="/help" className="text-white font-bold">HELP</a>
             <div className="flex items-center">
               <FontAwesomeIcon icon={faSearch} className='text-white leading-snug flex rounded-full bg-zinc-700 items-center rounded-r-none pl-2 py-1' />
               <input

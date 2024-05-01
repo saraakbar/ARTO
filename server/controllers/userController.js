@@ -9,7 +9,7 @@ function generateAccessToken(user) {
 const UserController = {
   register: async (req, res) => {
     try {
-      const { firstName, lastName, username, email, password} = req.body;
+      const { firstName, lastName, username, email, password } = req.body;
 
       if (!(email && password && username && firstName && lastName)) {
         return res.status(400).send("All input is required");
@@ -89,6 +89,47 @@ const UserController = {
     res.status(200).json({ message: 'Logout successful' });
   },
 
+  favorite: async (req, res) => {
+    const { productId } = req.query;
+    const userId = req.user.id;
+    try {
+      const isFavorited = await User.findOne({_id:userId, favorites: productId});
+      if (isFavorited) {
+        await User.findOneAndUpdate({_id:userId}, { $pull: { favorites: productId } });
+        res.json({ message: 'Product removed from favorites' });
+      } else {
+        await User.findOneAndUpdate({_id:userId}, { $push: { favorites: productId } });
+        res.json({ message: 'Product added to favorites' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error processing favorite request' });
+    }
+  },
+
+  //get ids only
+  getFavorites: async (req, res) => {
+    const userId = req.user.id;
+    try {
+      const fav = await User.findOne({_id:userId}).select('favorites -_id')
+      const favIds = fav.favorites;
+      res.status(200).json(favIds);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server Error' });
+    }
+  },
+
+  getFavoritesDetails: async (req, res) => {
+    const userId = req.user.id;
+    try {
+      const fav = await User.findOne({_id:userId}).select('favorites -_id').populate('favorites');
+      res.status(200).json(fav);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server Error' });
+    }
+  },
   /*
   profile: async (req, res) => {
     try {

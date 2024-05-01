@@ -5,6 +5,9 @@ const {auth} = require('../middleware/auth');
 
 router.post('/login', UserController.login);
 router.post('/register', UserController.register);
+router.patch('/favorite',auth, UserController.favorite);
+router.get('/favorites',auth, UserController.getFavorites);
+router.get('/favDetails',auth, UserController.getFavoritesDetails);
 //router.get('/:username/profile',auth, UserController.profile);
 //router.get('/home',auth, UserController.home);
 //router.delete('/delete',auth, UserController.delete);

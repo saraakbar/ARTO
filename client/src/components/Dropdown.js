@@ -1,7 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
-import { faSignOutAlt, faGear, faUser} from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faGear, faUser, faHeart } from "@fortawesome/free-solid-svg-icons";
 import "./Dropdown.css";
 const UserMenuDropdown = ({ uname }) => {
   const navigate = useNavigate();
@@ -30,6 +30,17 @@ const UserMenuDropdown = ({ uname }) => {
             <FontAwesomeIcon icon={faUser} className="mr-2" />
             Profile
           </button>
+          <button
+            className="hover:text-white text-left text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate(`/favorites`, { replace: true });
+            }}
+          >
+            <FontAwesomeIcon icon={faHeart} className="mr-2" />
+            Favorites
+          </button>
+
           <button
             className="hover:text-white text-left text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent"
             onClick={(e) => {
