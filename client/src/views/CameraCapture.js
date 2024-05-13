@@ -23,8 +23,8 @@ const CameraCapture = () => {
   useEffect(() => {
     const constraints = {
       video: {
-        width: { min: 1000 },
-        height: { min: 480 }
+        width: 1280,
+        height: 720
       }
     };
 
@@ -71,7 +71,7 @@ const CameraCapture = () => {
     }
   }, [localMediaStream, canvas, socket]);
 
-  
+
   useEffect(() => {
     // Socket event listener for receiving processed image from the server
     if (socket) {
@@ -93,13 +93,15 @@ const CameraCapture = () => {
   };
 
   return (
-    <div className='w-screen h-screen flex justify-center align-center bg-black'>
-      <canvas width="1000" height="480" ref={handleCanvasRef} style={{ display: 'none' }} />
-      {processedImage && <img src={processedImage} alt="Processed Image" />} {/* Display processed image if available */}
-      <button onClick={() => window.history.back()} className="absolute top-4 left-4 text-white">
-        <FontAwesomeIcon icon={faArrowCircleLeft} size="2x" />
-      </button>    
+    <div className='w-screen h-screen bg-black flex justify-center items-center'>
+      <div style={{ position: 'relative' }}>
+        <canvas width="800" height="450" ref={handleCanvasRef} style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', display: 'none' }} />
+        {processedImage && <img src={processedImage} alt="Processed Image" />} {/* Display processed image if available */}
+        <button onClick={() => window.history.back()} className="absolute top-4 left-4 text-white">
+          <FontAwesomeIcon icon={faArrowCircleLeft} size="2x" />
+        </button>
       </div>
+    </div>
   );
 };
 
