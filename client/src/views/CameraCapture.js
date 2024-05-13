@@ -60,7 +60,7 @@ const CameraCapture = () => {
       };
 
       // Start capturing frames (adjust interval as needed)
-      const intervalId = setInterval(sendSnapshot, 500);
+      const intervalId = setInterval(sendSnapshot, 100);
 
       // Cleanup function to clear the interval when the component unmounts
       return () => {
