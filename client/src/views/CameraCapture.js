@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons';
+import { useLocation } from 'react-router-dom';
 
 const CameraCapture = () => {
   const [socket, setSocket] = useState(null);
   const [localMediaStream, setLocalMediaStream] = useState(null);
   const [canvas, setCanvas] = useState(null);
   const [processedImage, setProcessedImage] = useState(null); // State to store processed image data
+
+  const location = useLocation();
+  const state = location.state || {};
+  const selectedColor = state.color || '#FF0000'; 
 
   useEffect(() => {
     const newSocket = io.connect(`http://localhost:5000`);
@@ -56,7 +61,7 @@ const CameraCapture = () => {
       const sendSnapshot = () => {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         let dataURL = canvas.toDataURL('image/jpeg');
-        socket.emit('image', dataURL);
+        socket.emit('image', { image: dataURL, color: selectedColor });
       };
 
       // Start capturing frames (adjust interval as needed)

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar2';
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from 'react-router-dom';
 import Pagination from '../components/Pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
@@ -9,16 +9,17 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Makeup = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [Products, setProducts] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [filterOptions, setFilterOptions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [fav, setFav] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedColor, setSelectedColor] = useState(""); // Add state for selected color
   const token = JSON.parse(localStorage.getItem('token'));
   const username = localStorage.getItem('username');
-  
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -27,14 +28,17 @@ const Makeup = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        const categories = ['All', ...response.data];
+        const categories = ['All','Lip Color', ...response.data.filter(category => category !== 'Lip Color')];
         setFilterOptions(categories);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
-    }
+    };
 
-    
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
     const fetchFavorites = async () => {
       try {
         const response = await axios.get('http://localhost:8000/favorites', {
@@ -43,15 +47,13 @@ const Makeup = () => {
           },
         });
         setFav(response.data);
-      }
-      catch (error) {
+      } catch (error) {
         console.error('Error fetching favorites:', error);
       }
-    }
-  
+    };
+
     fetchFavorites();
-    fetchCategories();
-  } ,[]);
+  }, []);
 
   const handleFilterChange = (filter) => {
     setCurrentPage(1);
@@ -62,9 +64,8 @@ const Makeup = () => {
     toast.success(message, {
       position: "top-right",
       theme: "dark",
-    })
-  }
-
+    });
+  };
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -76,14 +77,13 @@ const Makeup = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        params: { productId: productId }
+        params: { productId: productId },
       });
       favSuccess(response.data.message);
-
     } catch (error) {
       console.error('Error toggling favorite:', error);
     }
-  }
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -96,7 +96,6 @@ const Makeup = () => {
         });
         setProducts(response.data.products);
         setTotalPages(Math.ceil(response.data.total / 10));
-
       } catch (error) {
         console.error('Error fetching products:', error);
       }
@@ -134,39 +133,48 @@ const Makeup = () => {
           </div>
           {/* Product grid */}
           <div className="grid grid-cols-3 gap-y-8 gap-x-2">
-            {Products.map((Products) => (
-              <div key={Products._id} className="w-52 h-[28rem] rounded-lg bg-white overflow-hidden shadow-lg relative">
-                <button
-                  className="mt-1 ml-1 p-1 bg-gradient-to-r from-yellow-400 to-red-600 text-white text-sm font-bold rounded-md"
-                  onClick={() => navigate('/camera')}
-                >
-                  Try-On
-                </button>
-                {/* Favorite heart */}
-                <div
-                  className="absolute top-1 right-1 mr-2 cursor-pointer"
-                  onClick={() => toggleFavorite(Products._id)}
-                >
-                  <FontAwesomeIcon icon={faHeart} size="lg" color={fav.includes(Products._id) ? 'red' : 'black'} />
+            {Products.map((product) => {
+              const isColorSelected = product.color && product.color.includes(selectedColor);
+              return (
+                <div key={product._id} className="w-52 h-[28rem] rounded-lg bg-white overflow-hidden shadow-lg relative">
+                  <button
+                    className={`mt-1 ml-1 p-1 ${isColorSelected ? 'bg-gradient-to-r from-yellow-400 to-red-600' : 'bg-gray-400 cursor-not-allowed'} text-white text-sm font-bold rounded-md`}
+                    onClick={() => isColorSelected && navigate('/camera', { state: { color: selectedColor } })}
+                    disabled={!isColorSelected} // Disable the button if no color is selected
+                  >
+                    Try-On
+                  </button>
+                  {/* Favorite heart */}
+                  <div
+                    className="absolute top-1 right-1 mr-2 cursor-pointer"
+                    onClick={() => toggleFavorite(product._id)}
+                  >
+                    <FontAwesomeIcon icon={faHeart} size="lg" color={fav.includes(product._id) ? 'red' : 'black'} />
+                  </div>
+                  {/* Product image */}
+                  <img className="p-4 w-full h-60 object-contain object-center" src={product.img} alt={product.name} />
+                  {/* Color options */}
+                  <div className="flex justify-center space-x-2 mt-2">
+                    {product.color && product.color.length > 0 ? (
+                      product.color.map((color, index) => (
+                        <div
+                          key={index}
+                          className={`w-4 h-4 rounded-full cursor-pointer ${selectedColor === color ? 'border-2 border-black' : ''}`}
+                          style={{ backgroundColor: color }}
+                          onClick={() => setSelectedColor(color)} // Set selected color
+                        ></div>
+                      ))
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
+                  <h3 className="px-2 text-lg text-center font-semibold mt-4 mb-2">{product.name}</h3>
+                  <button className="mt-2 absolute bottom-0 w-full justify-center bg-zinc-700 hover:bg-moonstone text-white text-center font-semibold py-2 rounded-b-lg">
+                    Product Details
+                  </button>
                 </div>
-                {/* Product image */}
-                <img className="p-4 w-full h-60 object-contain object-center" src={Products.img} alt={Products.name} />
-                {/* Color options */}
-                <div className="flex justify-center space-x-2 mt-2">
-                  {Products.color && Products.color.length > 0 ? (
-                    Products.color.map((color, index) => (
-                      <div key={index} className="w-4 h-4 rounded-full bg-gray-400" style={{ backgroundColor: color }}></div>
-                    ))
-                  ) : (
-                    <div></div>
-                  )}
-                </div>
-                <h3 className="px-2 text-lg text-center font-semibold mt-4 mb-2">{Products.name}</h3>
-                <button className="mt-2 absolute bottom-0 w-full justify-center bg-zinc-700 hover:bg-moonstone text-white text-center font-semibold py-2 rounded-b-lg">
-                  Product Details
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
