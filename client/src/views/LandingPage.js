@@ -5,8 +5,8 @@ export default function LandingPage() {
     return (
         <>
             <Navbar />
-            <main >
-               
+            <main>
+            <img src="/About.png" alt="About" className="max-w-full max-h-full" />
             </main>
         </>
     );
