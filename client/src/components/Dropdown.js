@@ -2,21 +2,26 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import { faSignOutAlt, faGear, faUser, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 import "./Dropdown.css";
 const UserMenuDropdown = ({ uname }) => {
+  const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
   return (
     <div className="mr-2 dropdown-container">
       <div className="button-container">
         <button
-          className={` text-white font-bold hover:px-4 uppercase rounded outline-none focus:outline-none ease-linear transition-all duration-150`}
+          className={`${isHovered ? 'px-6' : ''} text-white font-bold hover:px-6 uppercase rounded outline-none focus:outline-none ease-linear transition-all duration-150`}
         >
           <FontAwesomeIcon icon={faUser} className="mr-2" />
           {uname}
         </button>
 
         <div
-          className={`dropdown-content text-base bg-white rounded-lg shadow-lg py-2 px-4`}    >
+          className={`dropdown-content text-base bg-white rounded-lg shadow-lg py-2 px-4`}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            >
           <button
             className="hover:text-white text-left text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent"
             onClick={(e) => {
