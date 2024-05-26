@@ -9,20 +9,19 @@
   }
   
   .button-container:hover .text-white {
-    background-color: #a1a1aa;
-    color: #ffffff;
-    border-radius: 8px;
+    background-color: #d4d4d8;
+    color: #000000;
+    border-radius: 8px 8px 0px 0px;
   }
   
   .dropdown-container .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #a1a1aa;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
+    background-color: #d4d4d8;
+    border-radius: 0px 0px 8px 8px;
     top: 100%;
     z-index: 1000;
-    width:140px
+    width:142px
   }
   
   .dropdown-container:hover .dropdown-content {
