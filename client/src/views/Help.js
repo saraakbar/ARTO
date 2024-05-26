@@ -7,9 +7,13 @@ export default function Help() {
 
     return (
         <>
+            <main className="h-screen overflow-hidden">
             <Navbar uname={username} />
-            <main>
-                <img src="/help.png" alt="help" className="max-w-full max-h-full" />
+                <img
+                    src="/help2.png"
+                    alt="Help"
+                    className="object-cover w-full h-full"
+                />
             </main>
         </>
     );

@@ -4,9 +4,13 @@ import Navbar from '../components/Navbar'
 export default function LandingPage() {
     return (
         <>
-            <Navbar />
-            <main>
-            <img src="/About.png" alt="About" className="max-w-full max-h-full" />
+            <main className="h-screen overflow-hidden">
+                <Navbar />
+                <img
+                    src="/landing.png"
+                    alt="About"
+                    className="object-cover w-full h-full"
+                />
             </main>
         </>
     );
