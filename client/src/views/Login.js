@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import {toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Login = ({ }) => {
@@ -97,8 +97,8 @@ const Login = ({ }) => {
     }, [formErrors]);
     return (
         <>
-            <Navbar />
             <main>
+                <Navbar />
                 <div className="flex h-screen">
                     <div className="w-1/2" style={{ backgroundImage: "url(/bg3.jpg)", backgroundSize: "cover" }}></div>
                     <div className="w-1/2 bg-light-orange flex justify-center items-center">

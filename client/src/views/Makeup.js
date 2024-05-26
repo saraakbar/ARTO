@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar2';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../components/Pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -28,7 +28,7 @@ const Makeup = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        const categories = ['All','Lip Color', ...response.data.filter(category => category !== 'Lip Color')];
+        const categories = ['All', 'Lip Color', ...response.data.filter(category => category !== 'Lip Color')];
         setFilterOptions(categories);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -94,7 +94,11 @@ const Makeup = () => {
           },
           params: { page: currentPage, filters: selectedFilters },
         });
-        setProducts(response.data.products);
+        const productsWithDefaultColor = response.data.products.map(product => ({
+          ...product,
+          selectedColor: product.color && product.color.length > 0 ? product.color[0] : null,
+        }));
+        setProducts(productsWithDefaultColor);
         setTotalPages(Math.ceil(response.data.total / 10));
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -103,6 +107,12 @@ const Makeup = () => {
 
     fetchProducts();
   }, [currentPage, selectedFilters]);
+
+  const handleColorSelection = (productId, color) => {
+    setProducts(products => products.map(product =>
+      product._id === productId ? { ...product, selectedColor: color } : product
+    ));
+  };
 
   return (
     <>
@@ -134,12 +144,12 @@ const Makeup = () => {
           {/* Product grid */}
           <div className="grid grid-cols-3 gap-y-8 gap-x-2">
             {Products.map((product) => {
-              const isColorSelected = product.color && product.color.includes(selectedColor);
+              const isColorSelected = product.color && product.color.includes(product.selectedColor);
               return (
                 <div key={product._id} className="w-52 h-[28rem] rounded-lg bg-white overflow-hidden shadow-lg relative">
                   <button
                     className={`mt-1 ml-1 p-1 ${isColorSelected ? 'bg-gradient-to-r from-yellow-400 to-red-600' : 'bg-gray-400 cursor-not-allowed'} text-white text-sm font-bold rounded-md`}
-                    onClick={() => isColorSelected && navigate('/camera', { state: { color: selectedColor } })}
+                    onClick={() => isColorSelected && navigate('/camera', { state: { color: product.selectedColor } })}
                     disabled={!isColorSelected} // Disable the button if no color is selected
                   >
                     Try-On
@@ -159,10 +169,12 @@ const Makeup = () => {
                       product.color.map((color, index) => (
                         <div
                           key={index}
-                          className={`w-4 h-4 rounded-full cursor-pointer ${selectedColor === color ? 'border-2 border-black' : ''}`}
+                          className={`w-5 h-5 rounded-full cursor-pointer flex items-center justify-center  ${product.selectedColor === color ? 'border-2 border-black' : ''}`}
                           style={{ backgroundColor: color }}
-                          onClick={() => setSelectedColor(color)} // Set selected color
-                        ></div>
+                          onClick={() => handleColorSelection(product._id, color)} // Set selected color
+                        >
+                          <FontAwesomeIcon icon={faCheck} size="xs" color={product.selectedColor === color ? 'black' : color} />
+                        </div>
                       ))
                     ) : (
                       <div></div>
