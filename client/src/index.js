@@ -18,9 +18,8 @@ import Settings from './views/Settings';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <ToastContainer/>
+  <BrowserRouter>
+    <ToastContainer />
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
@@ -32,6 +31,5 @@ root.render(
       <Route path="/profile" element={<Profile />} />
       <Route path="/settings" element={<Settings />} />
     </Routes>
-    </BrowserRouter>
-  </React.StrictMode>
+  </BrowserRouter>
 );

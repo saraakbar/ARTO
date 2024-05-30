@@ -13,7 +13,7 @@ router.get('/profile',auth, UserController.profile);
 //router.delete('/delete',auth, UserController.delete);
 router.get('/settings',auth, UserController.getSettings)
 router.patch('/settings',auth, UserController.updateSettings);
-//router.patch('/settings/password',auth, UserController.changePassword);
+router.patch('/settings/password',auth, UserController.changePassword);
 //router.post('/forgotPassword', UserController.forgotPassword);
 //router.get('/reset-password/:token', UserController.verifyToken)
 //router.post('/reset-password/:token', UserController.resetPassword);

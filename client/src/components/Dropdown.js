@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import { faSignOutAlt, faGear, faUser, faHeart, faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import "./Dropdown.css";
+import "../styles/Dropdown.css";
 
 const UserMenuDropdown = ({ uname }) => {
   const [isHovered, setIsHovered] = useState(false);
