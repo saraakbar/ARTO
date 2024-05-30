@@ -145,7 +145,7 @@ const Makeup = () => {
             {Products.map((product) => {
               const isColorSelected = product.color && product.color.includes(product.selectedColor);
               return (
-                <div key={product._id} className="w-52 h-[28rem] rounded-lg bg-white overflow-hidden shadow-lg relative">
+                <div key={product._id} className="w-52 h-[26rem] rounded-lg bg-white overflow-hidden shadow-lg relative">
                   <button
                     className={`mt-1 ml-1 p-1 ${isColorSelected ? 'bg-gradient-to-r from-yellow-400 to-amber-600' : 'bg-gray-400 cursor-not-allowed'} text-white text-sm font-bold rounded-md`}
                     onClick={() => isColorSelected && navigate('/camera', { state: { color: product.selectedColor } })}
@@ -180,9 +180,6 @@ const Makeup = () => {
                     )}
                   </div>
                   <h3 className="px-2 text-lg text-center font-semibold mt-4 mb-2">{product.name}</h3>
-                  <button className="mt-2 absolute bottom-0 w-full justify-center bg-zinc-700 hover:bg-moonstone text-white text-center font-semibold py-2 rounded-b-lg">
-                    Product Details
-                  </button>
                 </div>
               );
             })}

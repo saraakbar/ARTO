@@ -6,13 +6,22 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/Settings.css';
 import axios from 'axios';
+import { createClient } from '@supabase/supabase-js';
+import { TailSpin } from 'react-loader-spinner';
+import { useNavigate } from "react-router-dom";
 
 const Settings = () => {
+    const supabaseUrl = 'https://ebjmopyrebgvqlrkcmpj.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViam1vcHlyZWJndnFscmtjbXBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyODEyODcsImV4cCI6MjAyNzg1NzI4N30.qa-6cTywFTao77adQgydvTN7u4aet-31z3icJPWNVUA'
+    const supabase = createClient(supabaseUrl, supabaseKey);
     const [activeTab, setActiveTab] = useState('profile');
     const [showModal, setShowModal] = useState(false);
+    const [loading, setLoading] = useState(false); // Add loading state
     const token = JSON.parse(localStorage.getItem('token'));
     const username = localStorage.getItem('username');
     const [user, setUser] = useState({});
+    const navigate = useNavigate();
+    const [selectedFile, setSelectedFile] = useState(null);
     const [formErrors, setFormErrors] = useState({});
     const [submit, setSubmit] = useState(false);
     const [passwordData, setPasswordData] = useState({
@@ -64,9 +73,26 @@ const Settings = () => {
         });
     };
 
+    const deleteAccount = async () => {
+        try {
+            const response = await axios.delete('http://localhost:8000/delete', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            SettingsSuccess("Account deleted successfully.");
+        } catch (error) {
+            console.error('Error deleting account:', error);
+        }
+    };
+
     const handleDeleteAccount = () => {
         setShowModal(false);
-        toast.success('Account deleted successfully.');
+        deleteAccount();
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        navigate('/login');
     };
 
     useEffect(() => {
@@ -140,6 +166,64 @@ const Settings = () => {
                 currentPassword: '',
                 newPassword: '',
                 confirmPassword: ''
+            });
+        } catch (error) {
+            SettingsError(error.response.data.message);
+        }
+    };
+
+    const handleFileChange = (e) => {
+        e.preventDefault();
+        setSelectedFile(e.target.files[0]);
+    };
+
+    const renameFile = (file, newName) => {
+        const fileExtension = file.name.split('.').pop();
+        return new File([file], `${newName}.${fileExtension}`, {
+            type: file.type,
+        });
+    };
+
+    const handleUpload = async () => {
+        if (!selectedFile) {
+            SettingsError('Please select a file to upload.');
+            return;
+        }
+
+        const renamedFile = renameFile(selectedFile, username);
+        setLoading(true); // Set loading to true when the upload starts
+
+        try {
+            const { data, error } = await supabase.storage
+                .from('images') // Your Supabase bucket name
+                .upload(`public/${renamedFile.name}`, renamedFile, {
+                    cacheControl: '3600',
+                    upsert: true,
+                });
+
+            if (error) {
+                throw error;
+            }
+
+            const avatarUrl = `${supabaseUrl}/storage/v1/object/public/images/${data.path}`;
+            await updateUserAvatar(avatarUrl);
+            SettingsSuccess('Avatar uploaded successfully.');
+            setLoading(false); // Set loading to false when the upload is successful
+
+        } catch (error) {
+            SettingsError(`Error uploading avatar: ${error.message}`);
+        }
+    };
+
+    const updateUserAvatar = async (avatarUrl) => {
+        try {
+            const cacheBustedAvatarUrl = `${avatarUrl}?t=${new Date().getTime()}`;
+            await axios.patch('http://localhost:8000/avatar', {
+                avatarUrl: cacheBustedAvatarUrl,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
         } catch (error) {
             SettingsError(error.response.data.message);
@@ -272,14 +356,30 @@ const Settings = () => {
                     {activeTab === 'avatar' && (
                         <div>
                             <h2 className="text-xl font-semibold mb-4">Upload Avatar</h2>
-                            <form>
-                                <div className="mb-4">
-                                    <input type="file" className="w-full p-2 border border-gray-300 rounded" />
+                            <div className="mb-4">
+                                <input
+                                    type="file"
+                                    id="avatar"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    className="w-full p-2 border border-gray-300 rounded" />
+                            </div>
+                            <button type="button" onClick={handleUpload} className="mt-2 bg-zinc-700 block text-sm font-bold text-white py-2 px-10 rounded">UPLOAD AVATAR</button>
+                            {loading && (
+                                <div className="absolute top-4 right-4">
+                                    <TailSpin
+                                        height="40"
+                                        width="40"
+                                        color="#0ea5e9"
+                                        ariaLabel="tail-spin-loading"
+                                        radius="1"
+                                        visible={true}
+                                    />
                                 </div>
-                                <button className="mt-2 bg-zinc-700 block text-sm font-bold text-white py-2 px-10 rounded">SELECT NEW AVATAR</button>
-                            </form>
+                            )}
                         </div>
                     )}
+
 
                     {activeTab === 'delete' && (
                         <div>

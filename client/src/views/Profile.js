@@ -61,7 +61,8 @@ const Profile = () => {
                             <p className="text-center text-gray-600">{user.email}</p>
                         </div>
                         <div>
-                            <button className="bg-zinc-700 hover:bg-moonstone text-white py-2 px-4 rounded mt-8">Edit Profile
+                            <button className="bg-zinc-700 hover:bg-moonstone text-white py-2 px-4 rounded mt-8"
+                            onClick={()=>navigate('/settings')}>Edit Profile
                                 <FontAwesomeIcon icon={faPencil} className='ml-2' /></button>
                         </div>
                     </div>

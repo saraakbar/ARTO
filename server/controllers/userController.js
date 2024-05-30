@@ -47,6 +47,7 @@ const UserController = {
         lastName: lastName,
         username: username,
         email: email,
+        img: 'https://ebjmopyrebgvqlrkcmpj.supabase.co/storage/v1/object/public/images/default.png',
         password: hashedPassword,
       });
 
@@ -142,51 +143,17 @@ const UserController = {
     }
   },
 
-  /*
-
   delete: async (req, res) => {
     try {
-      const userId = req.user.id;
-      const newUserId = '658b9d04c63ba967ba0b8197';
-      //const user = await User.findById(userId).select('_id');
-      //await Review.deleteMany({ user: userId });
-      const reviews = await Review.find({ user: userId });
-
-      if (reviews.length > 0) {
-        for (const review of reviews) {
-          review.user = newUserId;
-          await review.save();
-        }
-      }
-
-      const reviewsWithActions = await Review.find({
-        $or: [{ likes: userId }, { dislikes: userId }],
-      });
-
-      if (reviewsWithActions.length > 0) {
-        reviewsWithActions.forEach(async (review) => {
-          if (review.likes.includes(userId)) {
-            review.likes.pull(userId);
-            review.numOfLikes -= 1;
-          }
-          if (review.dislikes.includes(userId)) {
-            review.dislikes.pull(userId);
-            review.numOfDislikes -= 1;
-          }
-          await review.save();
-        });
-      }
-
-      await User.findByIdAndRemove({ _id: userId })
+      const userId = req.user.id;    
+      await User.findByIdAndDelete({_id:userId })
       return res.status(200).json({ message: 'User deleted successfully' });
-
-
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: 'Server error' });
     }
   },
- */
+
   getSettings: async (req, res) => {
     const currentUser = req.user.id;
     try {
@@ -287,42 +254,24 @@ const UserController = {
     }
   }, 
 
-  /* 
+  
 
-  uploadAvatar: async (req, res) => {
-    try {
-      const username = req.params.username;
-      const userid = await User.find({ username: username }).select('_id');
-      if (!userid) {
-        return res.status(404).json({ message: 'User not found' });
+  changeAvatar: async (req, res) => {
+      const currentUser = req.user.id;
+      const {avatarUrl} = req.body;
+      try {
+        const result = await User.findByIdAndUpdate(currentUser, {
+          img: avatarUrl
+        });   
+        
+        res.status(201).send("Avatar Changed Successfully");
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error' });
       }
-      if (!req.file) {
-        return res.status(400).send({ message: 'No file uploaded' });
-      }
-
-      const prevImg = await User.find({ username: username }).select('img -_id');
-      if (Array.isArray(prevImg) && prevImg.length > 0 && prevImg[0].img) {
-        const prevImgPath = prevImg[0].img;
-        const fs = require('fs');
-        fs.unlinkSync(`.${prevImgPath}`);
-      }
-
-
-      const fileName = req.file.filename;
-      //const filePath = `${fileName}`;
-      const filePath = `/uploads/${fileName}`;
-
-      const result = await User.findByIdAndUpdate(userid, { img: filePath });
-
-      res.status(201).send('File uploaded successfully');
-
-    } catch (error) {
-      console.log(error);
-      return res.status(500).send({ message: "Server Error" });
-    }
-
   },
 
+  /*
   
   forgotPassword: async function (req, res, next) {
     const email = req.body.email;
