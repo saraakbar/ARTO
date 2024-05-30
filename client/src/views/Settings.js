@@ -44,7 +44,7 @@ const Settings = () => {
             errors.newPassword = 'Password should be at least 8 characters long and must contain at least one uppercase letter, one lowercase letter, and one number';
         }
         if (!passwordData.confirmPassword.trim()) errors.confirmPassword = 'Confirm New Password is required';
-        if (passwordData.newPassword !== passwordData.confirmPassword) {
+        if (passwordData.newPassword.trim() !== passwordData.confirmPassword.trim()) {
             errors.confirmPassword = 'New Password and Confirm New Password do not match';
         }
         return errors;
