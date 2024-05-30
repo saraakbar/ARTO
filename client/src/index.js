@@ -13,6 +13,8 @@ import Makeup from './views/Makeup';
 import CameraCapture from './views/CameraCapture';
 import Favorites from './views/Favorites';
 import Help from './views/Help';
+import Profile from './views/Profile';
+import Settings from './views/Settings';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -27,6 +29,8 @@ root.render(
       <Route path="/camera" element={<CameraCapture />} />
       <Route path="/favorites" element={<Favorites />} />
       <Route path="/help" element={<Help />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/settings" element={<Settings />} />
     </Routes>
     </BrowserRouter>
   </React.StrictMode>

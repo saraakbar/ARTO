@@ -8,11 +8,11 @@ router.post('/register', UserController.register);
 router.patch('/favorite',auth, UserController.favorite);
 router.get('/favorites',auth, UserController.getFavorites);
 router.get('/favDetails',auth, UserController.getFavoritesDetails);
-//router.get('/:username/profile',auth, UserController.profile);
+router.get('/profile',auth, UserController.profile);
 //router.get('/home',auth, UserController.home);
 //router.delete('/delete',auth, UserController.delete);
-//router.get('/settings',auth, UserController.getSettings)
-//router.patch('/settings',auth, UserController.updateSettings);
+router.get('/settings',auth, UserController.getSettings)
+router.patch('/settings',auth, UserController.updateSettings);
 //router.patch('/settings/password',auth, UserController.changePassword);
 //router.post('/forgotPassword', UserController.forgotPassword);
 //router.get('/reset-password/:token', UserController.verifyToken)

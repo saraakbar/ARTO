@@ -16,7 +16,6 @@ const Makeup = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [fav, setFav] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedColor, setSelectedColor] = useState(""); // Add state for selected color
   const token = JSON.parse(localStorage.getItem('token'));
   const username = localStorage.getItem('username');
 
@@ -148,7 +147,7 @@ const Makeup = () => {
               return (
                 <div key={product._id} className="w-52 h-[28rem] rounded-lg bg-white overflow-hidden shadow-lg relative">
                   <button
-                    className={`mt-1 ml-1 p-1 ${isColorSelected ? 'bg-gradient-to-r from-yellow-400 to-red-600' : 'bg-gray-400 cursor-not-allowed'} text-white text-sm font-bold rounded-md`}
+                    className={`mt-1 ml-1 p-1 ${isColorSelected ? 'bg-gradient-to-r from-yellow-400 to-amber-600' : 'bg-gray-400 cursor-not-allowed'} text-white text-sm font-bold rounded-md`}
                     onClick={() => isColorSelected && navigate('/camera', { state: { color: product.selectedColor } })}
                     disabled={!isColorSelected} // Disable the button if no color is selected
                   >

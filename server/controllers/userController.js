@@ -93,12 +93,12 @@ const UserController = {
     const { productId } = req.query;
     const userId = req.user.id;
     try {
-      const isFavorited = await User.findOne({_id:userId, favorites: productId});
+      const isFavorited = await User.findOne({ _id: userId, favorites: productId });
       if (isFavorited) {
-        await User.findOneAndUpdate({_id:userId}, { $pull: { favorites: productId } });
+        await User.findOneAndUpdate({ _id: userId }, { $pull: { favorites: productId } });
         res.json({ message: 'Product removed from favorites' });
       } else {
-        await User.findOneAndUpdate({_id:userId}, { $push: { favorites: productId } });
+        await User.findOneAndUpdate({ _id: userId }, { $push: { favorites: productId } });
         res.json({ message: 'Product added to favorites' });
       }
     } catch (error) {
@@ -111,7 +111,7 @@ const UserController = {
   getFavorites: async (req, res) => {
     const userId = req.user.id;
     try {
-      const fav = await User.findOne({_id:userId}).select('favorites -_id')
+      const fav = await User.findOne({ _id: userId }).select('favorites -_id')
       const favIds = fav.favorites;
       res.status(200).json(favIds);
     } catch (error) {
@@ -123,57 +123,26 @@ const UserController = {
   getFavoritesDetails: async (req, res) => {
     const userId = req.user.id;
     try {
-      const fav = await User.findOne({_id:userId}).select('favorites -_id').populate('favorites');
+      const fav = await User.findOne({ _id: userId }).select('favorites -_id').populate('favorites');
       res.status(200).json(fav);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server Error' });
     }
   },
-  /*
+
   profile: async (req, res) => {
     try {
-      const username = req.params.username;
-      const currentUser = req.user.username;
-
-      if (username == currentUser) {
-        const userInfo = await User.findOne({ username }).select(
-          '-suspended -password -__v -_id -role'
-        );
-
-        const userId = req.user.id;
-        const reviews = await Review.find({ user: userId })
-          .populate({
-            path: 'teacher',
-            select: 'name ID -_id',
-          })
-          .populate({
-            path: 'criteria.criterion',
-            model: 'Criteria',
-            select: 'name description -_id',
-          })
-          .select('-__v -user -likes -dislikes');
-
-        const userProfile = {
-          userInfo,
-          reviews,
-        };
-
-        return res.json(userProfile);
-      }
-
-      // Added functionality for looking at other people's profiles
-      else if (username != currentUser) {
-        return res
-          .status(418)
-          .json({ message: 'You are not authorized to view this profile' });
-      }
+      const usern = req.user.username;
+      const userInfo = await User.findOne({username: usern}).select('-favorites -password -__v -_id');
+      return res.json(userInfo);
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: 'Server error' });
     }
   },
 
+  /*
 
   delete: async (req, res) => {
     try {
@@ -217,11 +186,11 @@ const UserController = {
       return res.status(500).json({ message: 'Server error' });
     }
   },
-
+ */
   getSettings: async (req, res) => {
     const currentUser = req.user.id;
     try {
-      const user = await User.findById(currentUser).select('-suspended -role -password -__v -_id');
+      const user = await User.findById(currentUser).select('-favorites -img -password -__v -_id');
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
@@ -237,7 +206,7 @@ const UserController = {
   updateSettings: async (req, res) => {
     const currentUser = req.user.id;
     try {
-      const { firstName, lastName, username, email, erp } = req.body;
+      const { firstName, lastName, username, email} = req.body;
 
       const existingEmail = await User.findOne({ email, _id: { $ne: currentUser } });
 
@@ -251,12 +220,6 @@ const UserController = {
         return res.status(409).send({ message: "Username already taken. Please choose another username." });
       }
 
-      const existingERP = await User.findOne({ erp, _id: { $ne: currentUser } });
-
-      if (existingERP) {
-        return res.status(409).send({ message: "ERP already exists. Please check again." });
-      }
-
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         return res.status(400).send({ message: "Invalid email." });
@@ -266,7 +229,6 @@ const UserController = {
         firstName,
         lastName,
         username,
-        erp,
         email,
       });
 
@@ -325,6 +287,8 @@ const UserController = {
     }
   }, 
 
+  /* 
+
   uploadAvatar: async (req, res) => {
     try {
       const username = req.params.username;
@@ -359,6 +323,7 @@ const UserController = {
 
   },
 
+  
   forgotPassword: async function (req, res, next) {
     const email = req.body.email;
     try {

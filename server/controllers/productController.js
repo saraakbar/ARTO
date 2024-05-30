@@ -4,7 +4,7 @@ const ProductController = {
     getProducts: async (req, res) => {
         try {
             const { page, filters } = req.query;
-            const perPage = 10;
+            const perPage = 9;
             const skip = (page - 1) * perPage;
 
             if (!filters || filters === "All") {

@@ -58,8 +58,9 @@ const Favorites = () => {
             <Navbar uname={username} />
             <div className="container flex min-h-screen bg-light-orange relative justify-center">
                 <div className='p-4'>
-                    <h2 className="text-3xl py-2 font-semibold mb-6 text-center">Favorite Products</h2>
+                    <h2 className="text-3xl py-2 font-semibold mb-6 text-center">Favorites</h2>
                     {/* Product grid */}
+                    {fav.length > 0 ? (
                     <div className="grid grid-cols-4 gap-y-8 gap-x-8 justify-items-center">
                         {fav.map((product) => (
                             <div key={product._id} className="w-52 h-[28rem] rounded-lg bg-white overflow-hidden shadow-lg relative">
@@ -89,6 +90,9 @@ const Favorites = () => {
                             </div>
                         ))}
                     </div>
+                    ) : (
+                        <p className="text-center text-gray-600">No favorite products available.</p>
+                    )}
                 </div>
             </div>
         </>
