@@ -15,6 +15,8 @@ import Favorites from './views/Favorites';
 import Help from './views/Help';
 import Profile from './views/Profile';
 import Settings from './views/Settings';
+import ForgotPassword from './views/ForgotPassword';
+import ResetPassword from './views/ResetPassword';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -30,6 +32,8 @@ root.render(
       <Route path="/help" element={<Help />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/settings" element={<Settings />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
     </Routes>
   </BrowserRouter>
 );

@@ -26,7 +26,7 @@ const ProductController = {
             }
         } catch (error) {
             console.log(error);
-            res.status(500).send("Server Error");
+            res.status(500).json({ message: 'Server Error' });
         }
     },
 
@@ -36,7 +36,7 @@ const ProductController = {
             res.json(categories);
         } catch (error) {
             console.log(error);
-            res.status(500).send("Server Error");
+            res.status(500).json({ message: 'Server Error' });
         }
     }
 };

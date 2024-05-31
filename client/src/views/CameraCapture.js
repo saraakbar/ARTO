@@ -8,7 +8,7 @@ const CameraCapture = () => {
   const [socket, setSocket] = useState(null);
   const [localMediaStream, setLocalMediaStream] = useState(null);
   const [canvas, setCanvas] = useState(null);
-  const [processedImage, setProcessedImage] = useState(null); // State to store processed image data
+  const [processedImage, setProcessedImage] = useState(null); 
 
   const location = useLocation();
   const state = location.state || {};
@@ -41,7 +41,6 @@ const CameraCapture = () => {
         console.error("Error accessing camera:", error);
       });
 
-    // Cleanup function to stop the media stream when the component unmounts
     return () => {
       if (localMediaStream) {
         localMediaStream.getTracks().forEach(track => {
@@ -64,10 +63,8 @@ const CameraCapture = () => {
         socket.emit('image', { image: dataURL, color: selectedColor });
       };
 
-      // Start capturing frames (adjust interval as needed)
       const intervalId = setInterval(sendSnapshot, 100);
 
-      // Cleanup function to clear the interval when the component unmounts
       return () => {
         clearInterval(intervalId);
         video.pause();
@@ -78,14 +75,12 @@ const CameraCapture = () => {
 
 
   useEffect(() => {
-    // Socket event listener for receiving processed image from the server
     if (socket) {
       socket.on('processed_image', (data) => {
-        setProcessedImage(data); // Update state with processed image data
+        setProcessedImage(data); 
       });
     }
 
-    // Cleanup function to remove the event listener when the component unmounts
     return () => {
       if (socket) {
         socket.off('processed_image');
@@ -101,7 +96,7 @@ const CameraCapture = () => {
     <div className='w-screen h-screen bg-black flex justify-center items-center'>
       <div style={{ position: 'relative' }}>
         <canvas width="800" height="450" ref={handleCanvasRef} style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', display: 'none' }} />
-        {processedImage && <img src={processedImage} alt="Processed Image" />} {/* Display processed image if available */}
+        {processedImage && <img src={processedImage} alt="Processed Image" />} 
         <button onClick={() => window.history.back()} className="absolute top-4 left-4 text-white">
           <FontAwesomeIcon icon={faArrowCircleLeft} size="2x" />
         </button>

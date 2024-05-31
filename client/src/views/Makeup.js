@@ -19,6 +19,20 @@ const Makeup = () => {
   const token = JSON.parse(localStorage.getItem('token'));
   const username = localStorage.getItem('username');
 
+  const serverSuccess = (message) => {
+    toast.success(message, {
+      position: "top-right",
+      theme: "dark",
+    });
+  };
+
+  const serverError = (message) => {
+    toast.error(message, {
+      position: "top-right",
+      theme: "dark",
+    });
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -30,14 +44,10 @@ const Makeup = () => {
         const categories = ['All', 'Lip Color', ...response.data.filter(category => category !== 'Lip Color')];
         setFilterOptions(categories);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        serverError(error.response.data.message);
       }
     };
 
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
     const fetchFavorites = async () => {
       try {
         const response = await axios.get('http://localhost:8000/favorites', {
@@ -47,28 +57,13 @@ const Makeup = () => {
         });
         setFav(response.data);
       } catch (error) {
-        console.error('Error fetching favorites:', error);
+        serverError(error.response.data.message);
       }
     };
 
+    fetchCategories();
     fetchFavorites();
   }, []);
-
-  const handleFilterChange = (filter) => {
-    setCurrentPage(1);
-    setSelectedFilters(filter);
-  };
-
-  const favSuccess = (message) => {
-    toast.success(message, {
-      position: "top-right",
-      theme: "dark",
-    });
-  };
-
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
 
   const toggleFavorite = async (productId) => {
     try {
@@ -78,9 +73,9 @@ const Makeup = () => {
         },
         params: { productId: productId },
       });
-      favSuccess(response.data.message);
+      serverSuccess(response.data.message);
     } catch (error) {
-      console.error('Error toggling favorite:', error);
+      serverError(error.response.data.message)
     }
   };
 
@@ -100,7 +95,7 @@ const Makeup = () => {
         setProducts(productsWithDefaultColor);
         setTotalPages(Math.ceil(response.data.total / 10));
       } catch (error) {
-        console.error('Error fetching products:', error);
+        serverError(error.response.data.message)
       }
     };
 
@@ -111,6 +106,15 @@ const Makeup = () => {
     setProducts(products => products.map(product =>
       product._id === productId ? { ...product, selectedColor: color } : product
     ));
+  };
+
+  const handleFilterChange = (filter) => {
+    setCurrentPage(1);
+    setSelectedFilters(filter);
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
   };
 
   return (

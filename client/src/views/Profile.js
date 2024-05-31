@@ -14,6 +14,13 @@ const Profile = () => {
     const [user, setUser] = useState({});
     const navigate = useNavigate();
 
+    const serverError = (message) => {
+        toast.error(message, {
+            position: "top-right",
+            theme: "dark",
+        });
+    };
+
     useEffect(() => {
         const fetchFavorites = async () => {
             try {
@@ -25,7 +32,7 @@ const Profile = () => {
                 setFavorites(response.data.favorites.slice(0, 2));
             }
             catch (error) {
-                console.error('Error fetching favorites:', error);
+                serverError(error.response.data.message);
             }
         }
 
@@ -39,7 +46,7 @@ const Profile = () => {
                 setUser(response.data);
             }
             catch (error) {
-                console.error('Error fetching user:', error);
+                serverError(error.response.data.message);
             }
         }
 
@@ -62,7 +69,7 @@ const Profile = () => {
                         </div>
                         <div>
                             <button className="bg-zinc-700 hover:bg-moonstone text-white py-2 px-4 rounded mt-8"
-                            onClick={()=>navigate('/settings')}>Edit Profile
+                                onClick={() => navigate('/settings')}>Edit Profile
                                 <FontAwesomeIcon icon={faPencil} className='ml-2' /></button>
                         </div>
                     </div>

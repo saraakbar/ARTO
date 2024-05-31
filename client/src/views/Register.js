@@ -24,6 +24,20 @@ const Register = () => {
         setShowPassword(!showPassword);
     };
 
+    const registerSuccess = () => {
+        toast.success("Registration Successful. Please Login.", {
+            position: "top-right",
+            theme: "dark",
+        });
+    }
+
+    const registerError = (message) => {
+        toast.error(message, {
+            position: "top-right",
+            theme: "dark",
+        })
+    }
+
     const onChange = (e) => {
         const { name, value } = e.target;
         setUserDetails({
@@ -72,20 +86,6 @@ const Register = () => {
     };
 
     useEffect(() => {
-
-        const registerSuccess = () => {
-            toast.success("Registration Successful. Please Login.", {
-                position: "top-right",
-                theme: "dark",
-            });
-        }
-
-        const registerError = (message) => {
-            toast.error(message, {
-                position: "top-right",
-                theme: "dark",
-            })
-        }
 
         if (Object.keys(formErrors).length === 0 && isSubmit) {
             axios.post("http://localhost:8000/register", user).then((res) => {

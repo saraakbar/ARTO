@@ -83,7 +83,7 @@ const Settings = () => {
 
             SettingsSuccess("Account deleted successfully.");
         } catch (error) {
-            console.error('Error deleting account:', error);
+            SettingsError(error.response.data.message);
         }
     };
 
@@ -106,7 +106,7 @@ const Settings = () => {
 
                 setUser(response.data);
             } catch (error) {
-                console.error('Error fetching settings:', error);
+                SettingsError(error.response.data.message);
             }
         };
 

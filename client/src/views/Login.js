@@ -19,6 +19,13 @@ const Login = ({ }) => {
 
     const navigate = useNavigate();
 
+    const loginError = (message) => {
+        toast.error(message, {
+            position: "top-right",
+            theme: "dark",
+        })
+    }
+    
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
@@ -61,12 +68,6 @@ const Login = ({ }) => {
             return
         }
 
-        const loginError = (message) => {
-            toast.error(message, {
-                position: "top-right",
-                theme: "dark",
-            })
-        }
 
         if (Object.keys(formErrors).length === 0 && isSubmit) {
             axios
