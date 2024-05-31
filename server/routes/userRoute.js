@@ -14,9 +14,9 @@ router.get('/settings',auth, UserController.getSettings)
 router.patch('/settings',auth, UserController.updateSettings);
 router.patch('/settings/password',auth, UserController.changePassword);
 router.patch('/avatar',auth, UserController.changeAvatar);
-//router.post('/forgotPassword', UserController.forgotPassword);
-//router.get('/reset-password/:token', UserController.verifyToken)
-//router.post('/reset-password/:token', UserController.resetPassword);
+router.post('/forgotPassword', UserController.forgotPassword);
+router.get('/reset-password/:token', UserController.verifyToken)
+router.post('/reset-password/:token', UserController.resetPassword);
 router.get('/logout',auth, UserController.logout)
 
 module.exports = router;

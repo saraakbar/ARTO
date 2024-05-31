@@ -1,9 +1,11 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const User = require('../models/userModel')
+const Token = require('../models/tokenModel')
+const { sendVerificationEmail } = require('../middleware/email')
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '3600s' })
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '21600s' })
 }
 
 const UserController = {
@@ -12,24 +14,24 @@ const UserController = {
       const { firstName, lastName, username, email, password } = req.body;
 
       if (!(email && password && username && firstName && lastName)) {
-        return res.status(400).send("All input is required");
+        return res.status(400).json({message:"All input is required"});
       }
 
       const existingUser = await User.findOne({ email });
 
       if (existingUser) {
-        return res.status(409).send("User already exists. Please login");
+        return res.status(409).json({message:"User already exists. Please login"});
       }
 
       const usernameTaken = await User.findOne({ username });
 
       if (usernameTaken) {
-        return res.status(409).send("Username taken.");
+        return res.status(409).json({message:"Username taken."});
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        return res.status(400).send("Invalid email.");
+        return res.status(400).json({message:"Invalid email."});
       }
 
       if (
@@ -38,7 +40,7 @@ const UserController = {
         !/[A-Z]/.test(password) ||         // At least one uppercase letter
         !/[0-9]/.test(password)            // At least one number
       ) {
-        return res.status(400).send("Password should be minimum 8 characters long and should include one lowercase letter, one uppercase letter, and at least one number");
+        return res.status(400).json({message:"Password should be minimum 8 characters long and should include one lowercase letter, one uppercase letter, and at least one number"});
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -51,11 +53,11 @@ const UserController = {
         password: hashedPassword,
       });
 
-      res.status(201).send("Registration Successful. Please login");
+      res.status(201).json({ message: "Registration Successful. Please login"});
 
     } catch (error) {
       console.log(error);
-      return res.status(500).send("Server Error");
+      res.status(500).json({ message: 'Server Error' });
     }
   },
 
@@ -66,7 +68,7 @@ const UserController = {
       const existingUser = await User.findOne({ email });
 
       if (!existingUser) {
-        return res.status(404).send("User not found");
+        return res.status(404).json({message:"User not found"});
       }
 
       if (await bcrypt.compare(password, existingUser.password)) {
@@ -76,12 +78,12 @@ const UserController = {
         //console.log(accessToken)
         res.status(201).send(response)
       } else {
-        return res.status(400).send('Invalid credentials');
+        return res.status(400).json({message: 'Invalid credentials'});
       }
 
     } catch (error) {
       console.log(error);
-      return res.status(500).send("Server Error");
+      res.status(500).json({ message: 'Server Error' });
     }
   },
 
@@ -104,7 +106,7 @@ const UserController = {
       }
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Error processing favorite request' });
+      res.status(500).json({ message: 'Server Error' });
     }
   },
 
@@ -270,13 +272,11 @@ const UserController = {
         return res.status(500).json({ message: 'Server error' });
       }
   },
-
-  /*
   
   forgotPassword: async function (req, res, next) {
     const email = req.body.email;
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email: email });
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
@@ -331,7 +331,6 @@ const UserController = {
       return res.status(500).json({ message: 'Server error' });
     }
   },
-  */
 
   verifyToken: async function (req, res) {
     const token = req.params.token;
